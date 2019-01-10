@@ -11,7 +11,7 @@ jobs:
           command: gem install cucumber -v 2.99.0
       - run:
           name: install dart
-          command: apt-get update && apt-get install dart && dart --version
+          command: sudo apt-get update && sudo apt-get install dart && dart --version
       - run:
           name: Install dependencies
           command: pub get

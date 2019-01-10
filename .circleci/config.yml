@@ -1,0 +1,81 @@
+version: 2
+jobs:
+  edm/run:
+    docker:
+      - image: circleci/ruby:2.4.1-node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Pub get
+          command: pub get
+      - save_cache:
+          key: cache-{{ arch }}-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
+          paths:
+            - ~/.dart_tool
+            - ~/.cache
+      - run:
+          name: Run edm tests
+          command: |
+            cucumber -f json > results/report.json
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/results
+            - project/scripts
+  artifacts:
+    docker:
+      - image: circleci/ruby:2.4.1-node-browsers
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: ~/
+      - store_artifacts:
+          path: results/report.json
+      - store_test_results:
+          path: ./
+  upload_reports:
+    docker:
+      - image: circleci/ruby:2.4.1-node-browsers
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: install dependencies
+          command: apt-get update && apt-get install -y jq
+      - run:
+          name: refresh Xray API key
+          command: |
+            echo 'export XRAY_API_TOKEN=`. scripts/get_xray_api_token.sh`' >> $BASH_ENV
+
+      - run:
+          name: upload reports
+          command: . scripts/upload_test_results_to_xray.sh
+workflows:
+  version: 2
+  run_tests:
+    jobs:
+      - edm/run
+      - artifacts:
+          requires:
+            - edm/run
+      - upload_reports:
+          requires:
+            - artifacts
+  run_tests_nightly:
+    jobs:
+      - edm/run
+      - artifacts:
+          requires:
+            - edm/run
+      - upload_reports:
+          requires:
+            - artifacts
+    triggers:
+      - schedule:
+          cron: "0 2 * * *"
+          filters:
+            branches:
+              only:
+                - master

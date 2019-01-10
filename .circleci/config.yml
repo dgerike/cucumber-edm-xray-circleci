@@ -7,7 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Pub get
+          name: install cucumber
+          command: gem install cucumber -v 2.99.0
+      - run:
+          name: Install dependencies
           command: pub get
       - save_cache:
           key: cache-{{ arch }}-{{ .Branch }}-{{ checksum "pubspec.yaml" }}

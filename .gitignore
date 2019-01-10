@@ -1,0 +1,5 @@
+.idea
+.DS_Store
+credentials.yaml
+.dart_tool
+.packages

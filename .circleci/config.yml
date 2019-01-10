@@ -25,13 +25,29 @@ jobs:
       - run:
           name: Install dependencies
           command: /usr/lib/dart/bin/pub get
+      - run:
+          name: Install webdriver
+          command: |
+            sudo apt-get install unzip
+            wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            chmod +x chromedriver
+            sudo mv -f chromedriver /usr/local/share/chromedriver
+            sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+            sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
       - save_cache:
           key: cache-{{ arch }}-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
           paths:
             - ~/.dart_tool
             - ~/.cache
       - run:
-          name: Run edm tests
+          name: Start webdriver
+          command: chromedriver --port=9515
+      - run:
+          name: Start test runner
+          command: dart bin/runner.dart -l test/definitions.dar
+      - run:
+          name: Run tests
           command: |
             cucumber -f json > results/report.json
       - persist_to_workspace:

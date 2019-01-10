@@ -10,6 +10,9 @@ jobs:
           name: install cucumber
           command: gem install cucumber -v 2.99.0
       - run:
+          name: install dart
+          command: apt-get update && apt-get install dart && dart --version
+      - run:
           name: Install dependencies
           command: pub get
       - save_cache:

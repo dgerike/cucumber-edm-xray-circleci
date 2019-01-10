@@ -19,10 +19,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install dart
             dart --version
-            which dart
       - run:
           name: Install dependencies
-          command: pub get
+          command: /usr/lib/dart/bin/pub get
       - save_cache:
           key: cache-{{ arch }}-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
           paths:

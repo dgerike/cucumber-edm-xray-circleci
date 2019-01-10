@@ -14,16 +14,22 @@ abstract class Driver {
   static WebDriver _driver;
   static bool active;
 
-  WebDriver get driver => _driver ??= createDriver(
-      uri: Uri.parse('http://localhost:9515'),
-      desired: Config.instance.headless
-          ? (Capabilities.chrome
+  WebDriver get driver =>
+      _driver ??= createDriver(
+          uri: Uri.parse('http://localhost:9515'),
+          desired: Config.instance.headless
+              ? (Capabilities.chrome
             ..addAll({
               "chromeOptions": {
-                "args": ["--headless"]
+                "args": ["--headless --window-size=1200,900"]
               }
             }))
-          : Capabilities.chrome);
+              : Capabilities.chrome
+            ..addAll({
+              "chromeOptions": {
+                "args": ["--window-size=1200,900"]
+              }
+            }));
 
   WebDriverPageUtils get utils => WebDriverPageUtils(driver);
 

@@ -6,6 +6,9 @@ jobs:
     parallelism: 1
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - cache-{{ arch }}-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
       - run:
           name: install cucumber
           command: gem install cucumber -v 2.99.0

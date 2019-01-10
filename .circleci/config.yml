@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            cucumber -f json > results/report.json
+            sleep 10 && cucumber -f json > results/report.json
       - persist_to_workspace:
           root: ~/
           paths:

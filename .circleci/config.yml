@@ -39,6 +39,9 @@ jobs:
             - ~/.dart_tool
             - ~/.cache
       - run:
+          name: create credentials file
+          command: cp credentials.example.yaml credentials.yaml
+      - run:
           name: Start webdriver
           command: chromedriver --port=9515
           background: true
@@ -47,9 +50,11 @@ jobs:
           command: dart bin/runner.dart -l test/definitions.dart
           background: true
       - run:
+          name: Wait for server to start
+          command: sleep 5
+      - run:
           name: Run tests
-          command: |
-            sleep 10 && cucumber -f json > results/report.json
+          command: cucumber -f json > results/report.json
       - persist_to_workspace:
           root: ~/
           paths:

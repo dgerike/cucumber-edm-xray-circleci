@@ -41,9 +41,11 @@ jobs:
       - run:
           name: Start webdriver
           command: chromedriver --port=9515
+          background: true
       - run:
           name: Start test runner
-          command: dart bin/runner.dart -l test/definitions.dar
+          command: dart bin/runner.dart -l test/definitions.dart
+          background: true
       - run:
           name: Run tests
           command: |
